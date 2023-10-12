@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> 豆瓣电影评论情感分析系统 </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/milligram@1.4.1/dist/milligram.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f9f9f9;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+            background-image: linear-gradient(to bottom, #ffffff, #f9f9f9);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        form {
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="submit"],
+        button {
+            padding: 1px 20px;
+            background-color: #68B88E; /* 修改按钮颜色为 #68B88E */
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover,
+        button:hover {
+            background-color: #488A6C; /* 修改按钮悬停颜色为 #488A6C */
+        }
+
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .fa-spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #FFFFFF;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .flex-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .flex-container > div {
+            flex: 1;
+        }
+
+        .input-container, .button-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .input-container input[type="text"] {
+            width: 100%;
+        }
+        .button-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .button-container button {
+        margin-left: 10px;
+        padding: 10px 20px;
+        background-color: #68B88E;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        margin-right:220px;
+    }
+
+    .button-container button::after {
+        content: ""; /* 添加一个伪元素 */
+        display: inline-block;
+        vertical-align: middle;
+        height: 100%;
+    }
+        .loading-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .loading-container i {
+            margin-left: 5px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .input-container label {
+            white-space: nowrap;
+        }
+        .recommendation-menu {
+            position: fixed;
+            top: 160px;
+            right: 600px;
+            overflow: hidden;
+            height: 200px;
+            z-index: 9999;
+        }
+
+        .recommendation-menu ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            animation: scroll 20s linear infinite;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100%); }
+        }
+
+.recommendation-menu .menu-header {
+    font-size: 16px; /* 设置字体大小与 Movie 1 相同 */
+    font-weight: bold; /* 设置字体加粗 */
+}
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="recommendation-menu">
+        <ul>
+            <li class="menu-header">电影推荐</li>
+            <li>云在江口</li>
+            <li>五月十二月</li>
+            <li>爱的时光</li>
+            <li>王子</li>
+            <li>请别相信她</li>
+            <li>黑白游龙</li>
+            <li>闭上眼睛</li>
+        </ul>
+    </div>
+    <div class="container">
+        <h1><i class="fas fa-film"></i> Movie Analysis </h1>
+        <form method="POST" action="/">
+            <label for="movie_name_analysis">电影名称（分析）：</label>
+            <input type="text" id="movie_name_analysis" name="movie_name_analysis">
+            <input type="submit" value="分析">
+        </form>
+
+        <form method="POST" action="/">
+            <label for="movie_name_prediction">电影名称（预测）：</label>
+            <input type="text" id="movie_name_prediction" name="movie_name_prediction">
+            <input type="submit" value="预测">
+        </form>
+        <h1><i class="fas fa-comment-alt"></i> Sentiment Analysis </h1>
+        <div class="flex-container">
+            <div class="input-container">
+                <label for="sentence">输入句子：</label>
+                <input type="text" id="sentence" name="sentence">
+            </div>
+            <div class="button-container">
+                <button onclick="analyzeSentiment()"><i class="fas fa-check"></i> 分析</button>
+                <span id="loading" style="display: none;"><i class="fas fa-spinner"></i></span>
+            </div>
+        </div>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function analyzeSentiment() {
+            var sentence = $("#sentence").val();  // 获取输入的句子
+            $("#result").empty(); // 清空结果区域
+            $("#loading").show(); // 显示加载动画
+            $.ajax({
+                type: "POST",
+                url: "/analyze_sentiment",
+                data: JSON.stringify({ sentence: sentence }),
+                contentType: "application/json",
+                dataType: "json",
+                success: function(data) {
+                    // 更新显示情感分析结果的区域
+                    $("#result").text("情感分析结果：" + data.sentiment);
+                    $("#loading").hide(); // 隐藏加载动画
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Analysis</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #edf4ed;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #FFFFFF;
+            padding: 20px;
+            border: 1px solid #CCCCCC;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .container h1 {
+            margin-bottom: 10px;
+        }
+
+        .container p {
+         margin-bottom: 20px;
+        white-space: pre-line;
+        margin-bottom: 10px; /* 调整行间距的数值 */
+        }
+
+        .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.image-container,
+.bilibili-link {
+    width: 45%;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.image-container img,
+.bilibili-link img {
+    width: 100%;
+    height: auto;
+}
+
+        .separator {
+            border-top: 1px solid #CCCCCC;
+            margin: 20px 0;
+        }
+        .back-to-home {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    background-color: #CCCCCC;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.back-to-home a {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+.container p {
+    margin-bottom: 10px; /* 调整行间距的数值 */
+    line-height: 2; /* 调整行高 */
+}
+    </style>
+</head>
+<body>
+    <div id="app">
+        <el-container>
+            <el-header>
+                <h2> 高分影评简介 </h2>
+            </el-header>
+            <el-main>
+                <el-card>
+                    <div class="container">
+                        <p>{{ summary }}</p>
+                    </div>
+                </el-card>
+            </el-main>
+        </el-container>
+        <el-container>
+            <el-header>
+                <h2> 高分影评 </h2>
+            </el-header>
+            <el-main>
+                <el-card>
+                    <div class="container">
+                        <p>{{ content|replace('。', '。\n')|replace('？', '？\n')|replace('！', '！\n') }}</p>
+                    </div>
+                </el-card>
+            </el-main>
+        </el-container>
+        <el-container>
+            <el-header>
+                <h2> 低分影评简介 </h2>
+            </el-header>
+            <el-main>
+                <el-card>
+                    <div class="container">
+                        <p>{{ summary_cha }}</p>
+                    </div>
+                </el-card>
+            </el-main>
+        </el-container>
+        <el-container>
+            <el-header>
+                <h2> 低分影评 </h2>
+            </el-header>
+            <el-main>
+                <el-card>
+                    <div class="container">
+                       <p>{{ content_cha|replace('。', '。\n')|replace('？', '？\n')|replace('！', '！\n') }}</p>
+                    </div>
+                </el-card>
+            </el-main>
+        </el-container>
+        <el-container>
+    <el-header>
+        <h2> 词云&bilibili视频推荐 </h2>
+    </el-header>
+    <el-main>
+        <el-card>
+            <div class="container">
+                <div class="image-container">
+                    <img class="example-image" src="{{ url_for('static', filename=image_path) }}" alt="Example Image">
+                </div>
+                <div class="bilibili-link">
+
+                    <a href="{{ url_bilibili }}">
+                        <img class="bilibili-image" src="{{ url_for('static', filename=image_url) }}" alt="Bilibili Link">
+                    </a>
+                </div>
+            </div>
+        </el-card>
+    </el-main>
+</el-container>
+        <div class="separator"></div>
+    </div>
+    <div class="back-to-home">
+<a href="{{ url_for('back_to_home') }}">返回首页</a>
+    </div>
+
+
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script>
+        new Vue({
+            el: '#app'
+        });
+    </script>
+</body>
+</html>
